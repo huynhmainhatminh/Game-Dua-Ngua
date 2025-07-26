@@ -19,3 +19,10 @@
 - PyGame
 - PodSixNet
 
+## Hình ảnh demo
+
+<img width="1388" height="793" alt="Image" src="https://github.com/user-attachments/assets/a9f109da-253e-4887-8038-d7a6d72a2570" />
+
+<img width="1393" height="800" alt="Image" src="https://github.com/user-attachments/assets/089b23e5-ce48-474b-b842-34f33b06f4c4" />
+
+<img width="1395" height="785" alt="Image" src="https://github.com/user-attachments/assets/bf28fbb6-055e-4bcd-b2c4-c0d1ac9106ed" />
