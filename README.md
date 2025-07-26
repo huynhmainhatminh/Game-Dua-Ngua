@@ -15,5 +15,7 @@
 ### Ngôn ngữ lập trình
 - Python 3.11
 
-
+### Thư viện
+- PyGame
+- PodSixNet
 
