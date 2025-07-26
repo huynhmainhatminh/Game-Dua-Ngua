@@ -12,10 +12,10 @@
 
 
 
-### Ngôn ngữ lập trình
+## Ngôn ngữ lập trình
 - Python 3.11
 
-### Thư viện
+## Thư viện
 - PyGame
 - PodSixNet
 
