@@ -19,6 +19,12 @@ background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREE
 background_x = 0
 background_y = 0
 
+music = pygame.mixer.Sound('music/brick.wav')  # Đảm bảo rằng tệp music.wav tồn tại trong thư mục hiện tại
+
+countdown = 31  # Bắt đầu từ 30
+
+last_tick = pygame.time.get_ticks()  # Lấy thời gian ban đầu
+
 json_layout_menu_nhanvat = {
         "1": [80, 62],
         "2": [88, 66],
@@ -155,6 +161,7 @@ def options():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
+                    music.play()
                     home_game()
 
         pygame.display.update()
@@ -162,7 +169,7 @@ def options():
 
 def play():
 
-    global background_x, background_y
+    global background_x, background_y, countdown
 
 
     frames_nhanvat1 = ListFrames(
@@ -183,6 +190,8 @@ def play():
     frames_nhanvat6 = ListFrames(
         frame_width=80, frame_height=62, image="png_ngua_dua/ngua_dua_6.png", scale=3, color=(255, 255, 0)
         ).run()
+
+    ranking = []
 
     # Tạo các đối tượng nhân vật và thêm vào nhóm sprite
     character1 = Character(frames_nhanvat1, 10, 440, speed=1, animation_cooldown=80, go_up=True)
@@ -209,8 +218,8 @@ def play():
 
     while run:
         # Di chuyển background
-        background_x -= 9  # Di chuyển từ phải qua trái (hoặc có thể thay đổi tốc độ)
-        if background_x <= -screen_width:  # Khi background đã đi qua hết màn hình, reset lại vị trí
+        background_x -= random.randint(7, 9)
+        if background_x <= -screen_width:
             background_x = 0
 
         screen.blit(background_image, (background_x, background_y))
@@ -237,6 +246,32 @@ def play():
         # Vẽ tất cả các sprite lên màn hình
         all_sprites.draw(screen)
 
+        # Kiểm tra từng con ngựa đã về đích chưa
+        for i, character in enumerate([character1, character2, character3, character4, character5, character6], start=1):
+            if character.rect.x >= SCREEN_WIDTH and character not in ranking:
+                ranking.append(character)
+                print(f"Ngựa {i} về hạng {len(ranking)}!")
+
+        if len(ranking) == 6:
+            print("\nKẾT QUẢ CHUNG CUỘC:")
+            for idx, horse in enumerate(ranking, start=1):
+                if horse == character1:
+                    name = "Ngựa 1"
+                elif horse == character2:
+                    name = "Ngựa 2"
+                elif horse == character3:
+                    name = "Ngựa 3"
+                elif horse == character4:
+                    name = "Ngựa 4"
+                elif horse == character5:
+                    name = "Ngựa 5"
+                elif horse == character6:
+                    name = "Ngựa 6"
+                print(f"Hạng {idx}: {name}")
+            run = False
+            countdown = 31
+            menu_game_play()
+
         # Xử lý sự kiện
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -246,12 +281,163 @@ def play():
         clock.tick(60)  # Điều chỉnh tốc độ FPS
 
 
+
+def menu_bet():
+    global background_x, background_y, countdown, last_tick
+
+    frame_dat_cuoc = pygame.image.load('assets/khung_cuoc_1.png')
+
+    frame_dat_cuoc = pygame.transform.scale(frame_dat_cuoc, (500, 250))
+    frame_dat_cuoc.set_colorkey((84, 84, 84))
+
+    khung_cuoc = pygame.image.load('assets/khung_cuoc_1.png')
+    khung_cuoc = pygame.transform.scale(khung_cuoc, (350, 110))
+
+    frames_nhanvat1 = ListFrames(
+        frame_width=80, frame_height=66, image="ngua_vay_duoi/1.png", scale=1.3, color=(255, 255, 0)
+    ).run()
+
+    frames_nhanvat2 = ListFrames(
+        frame_width=80, frame_height=66, image="ngua_vay_duoi/2.png", scale=1.3, color=(255, 255, 0)
+    ).run()
+
+    frames_nhanvat3 = ListFrames(
+        frame_width=80, frame_height=66, image="ngua_vay_duoi/3.png", scale=1.3, color=(255, 255, 0)
+    ).run()
+
+    frames_nhanvat4 = ListFrames(
+        frame_width=80, frame_height=66, image="ngua_vay_duoi/4.png", scale=1.3, color=(255, 255, 0)
+    ).run()
+
+    frames_nhanvat5 = ListFrames(
+        frame_width=80, frame_height=66, image="ngua_vay_duoi/5.png", scale=1.3, color=(255, 255, 0)
+    ).run()
+
+    frames_nhanvat6 = ListFrames(
+        frame_width=80, frame_height=66, image="ngua_vay_duoi/6.png", scale=1.3, color=(255, 255, 0)
+    ).run()
+
+    character1 = Character(frames_nhanvat1, 35, 45, speed=0)
+    character2 = Character(frames_nhanvat2, 35, 165, speed=0)
+    character3 = Character(frames_nhanvat3, 35, 285, speed=0)
+    character4 = Character(frames_nhanvat4, 35, 405, speed=0)
+    character5 = Character(frames_nhanvat5, 35, 525, speed=0)
+    character6 = Character(frames_nhanvat6, 35, 645, speed=0)
+
+    all_sprites = pygame.sprite.Group()
+    all_sprites.add(character1, character2, character3, character4, character5, character6)
+
+    while True:
+
+        current_time = pygame.time.get_ticks()
+        if current_time - last_tick >= 1000:  # Mỗi 1000ms (1 giây)
+            countdown -= 1
+            last_tick = current_time
+
+        if countdown < 0:
+            play()  # Hết thời gian thì vào chơi game
+
+        background_x -= 1
+        if background_x <= -SCREEN_WIDTH:
+            background_x = 0
+
+        screen.blit(background_image, (background_x, background_y))
+        if background_x < 0:
+            screen.blit(background_image, (background_x + SCREEN_WIDTH, background_y))
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        # KIM CUONG
+
+        ngua_1 = Button(
+            image=khung_cuoc, pos=(200, 90),
+            text_input="      KIM CUONG #1", font=get_font(19), base_color="BLACK", hovering_color="Green", colour=(84,
+                                                                                                                    84,
+                                                                                                                    84),
+        )
+
+        ngua_2 = Button(
+            image=khung_cuoc, pos=(200, 210),
+            text_input="      THIEN LONG #2", font=get_font(19), base_color="BLACK", hovering_color="Green",
+            colour=(84, 84, 84),
+        )
+
+        ngua_3 = Button(
+            image=khung_cuoc, pos=(200, 330),
+            text_input="      CHAN SAT #3", font=get_font(19), base_color="BLACK", hovering_color="Green", colour=(84,
+                                                                                                                   84,
+                                                                                                                   84),
+        )
+
+        ngua_4 = Button(
+            image=khung_cuoc, pos=(200, 450),
+            text_input="      BACH MA #4", font=get_font(19), base_color="BLACK", hovering_color="Green", colour=(84,
+                                                                                                                  84,
+                                                                                                                  84),
+        )
+
+        ngua_5 = Button(
+            image=khung_cuoc, pos=(200, 570),
+            text_input="      BO MONG #5", font=get_font(19), base_color="BLACK", hovering_color="Green", colour=(84,
+                                                                                                                  84,
+                                                                                                                  84),
+        )
+
+        ngua_6 = Button(
+            image=khung_cuoc, pos=(200, 690),
+            text_input="      HAC BACH #6", font=get_font(19), base_color="BLACK", hovering_color="Green", colour=(84,
+                                                                                                                   84,
+                                                                                                                   84),
+        )
+
+        place_bet = Button(
+            image=pygame.image.load("assets/Quit Rect.png"), pos=(1400 - 280, 350),
+            text_input="PLACE BET", font=get_font(50), base_color="#ff005f", hovering_color="grey",
+            border_color_text="BLACK", colour=(84, 84, 84), border_width=6
+        )
+
+        cancel = Button(
+            image=pygame.image.load("assets/Quit Rect.png"), pos=(1400 - 280, 450),
+            text_input="CANCEL", font=get_font(45), base_color="#ff8700", hovering_color="grey",
+            border_color_text="BLACK", colour=(84, 84, 84)
+        )
+        for button in [ngua_1, ngua_2, ngua_3, ngua_4, ngua_5, ngua_6, cancel, place_bet]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(screen)
+
+        draw_text_with_border(
+            str(countdown), get_font(80), "#d70000", "black", (SCREEN_WIDTH // 2 - 90, 60), 4
+        )
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if cancel.checkForInput(MENU_MOUSE_POS):
+                    music.play()
+
+                    menu_game_play()
+
+        # Cập nhật tất cả các sprite trong nhóm
+
+        screen.blit(frame_dat_cuoc, (SCREEN_WIDTH - frame_dat_cuoc.get_width() - 30, 30))
+
+        all_sprites.update()
+
+        # Vẽ tất cả các sprite lên màn hình
+        all_sprites.draw(screen)
+
+        pygame.display.update()
+
+
+
+
 def menu_game_play():
 
-    global background_x, background_y
+    global background_x, background_y, countdown, last_tick
 
-    countdown = 30  # Bắt đầu từ 30
-    last_tick = pygame.time.get_ticks()  # Lấy thời gian ban đầu
 
     khung_cuoc = pygame.image.load('assets/khung_ten.png')
     khung_cuoc = pygame.transform.scale(khung_cuoc, (200, 150))
@@ -349,27 +535,37 @@ def menu_game_play():
             text_offset=(0, -51)
         )
 
+        button_bet = Button(
+            image=pygame.image.load("assets/Quit Rect.png"), pos=(SCREEN_WIDTH - 200, 700),
+            text_input="BET", font=get_font(90), base_color="#ff005f", hovering_color="grey",
+            border_color_text="BLACK", colour=(84, 84, 84), border_width=7
+            )
 
-
-        for button in [ngua_1, ngua_2, ngua_3, ngua_4, ngua_5, ngua_6]:
+        for button in [button_bet, ngua_1, ngua_2, ngua_3, ngua_4, ngua_5, ngua_6]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(screen)
 
         # Vẽ số đếm ngược
-        MENU_TEXT = get_font(100).render(str(countdown), True, "#d70000")
-        MENU_RECT = MENU_TEXT.get_rect(center=(screen.get_width() // 2, 100))
-        screen.blit(MENU_TEXT, MENU_RECT)
+        # MENU_TEXT = get_font(100).render(str(countdown), True, "#d70000")
+        # MENU_RECT = MENU_TEXT.get_rect(center=(screen.get_width() // 2, 100))
+
+        draw_text_with_border(
+            str(countdown), get_font(80), "#d70000", "black", (SCREEN_WIDTH // 2 - 90, 60), 4
+        )
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-        # Cập nhật tất cả các sprite trong nhóm
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if button_bet.checkForInput(MENU_MOUSE_POS):
+                    music.play()
+                    menu_bet()
+
 
         all_sprites.update()
 
-        # Vẽ tất cả các sprite lên màn hình
         all_sprites.draw(screen)
 
         pygame.display.update()
@@ -384,6 +580,7 @@ def home_game():
     positions = [(0, 500), (360, 560), (720, 500), (1100, 560)]
 
     characters = []
+
 
     for i in range(4):
         name = choices[i]
@@ -447,10 +644,13 @@ def home_game():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    music.play()
                     menu_game_play()
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    music.play()
                     options()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    music.play()
                     pygame.quit()
                     sys.exit()
 
