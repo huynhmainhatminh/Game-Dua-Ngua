@@ -1,4 +1,4 @@
-# Giai-Tri-Cuoi-Tuan
+# Trò Chơi Đua Ngựa
 [![Python Version](https://img.shields.io/badge/Python-3.11-blue)](https://www.python.org/downloads/release/python-3111/)
 
 <p align="center">
