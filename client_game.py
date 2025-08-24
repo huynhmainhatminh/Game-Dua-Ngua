@@ -24,6 +24,11 @@ json_layout_menu_nhanvat = {
 music_button = pygame.mixer.Sound('music/brick.wav')
 
 music_loop = pygame.mixer.Sound('music/game-music-loop-7-145285.wav')
+
+game_over = pygame.mixer.Sound('music/game-over-classic-206486.wav')
+
+game_win = pygame.mixer.Sound('music/goodresult-82807.wav')
+
 music_loop.play(loops=9999)
 
 
@@ -150,6 +155,8 @@ class Game(ConnectionListener):
         if self.state == "waiting":
             self.countdown = data["countdown"]
             self.ranking = data.get("ranking", [])
+
+
             # print(f"Countdown updated: {self.countdown}")
         else:  # playing
             self.ranking = data.get("ranking", [])
@@ -159,9 +166,9 @@ class Game(ConnectionListener):
                         frame = char_data["frame"] % self.frame_counts[character.id] if self.frame_counts[character.id] > 0 else 0
                         # print(f"Updating horse {character.id}: x={char_data['x']}, y={char_data['y']}, frame={frame}")
                         character.update(char_data["x"], char_data["y"], frame)
-            if len(self.ranking) == 6:
-                print(self.ranking)
-                self.state = "results"
+            # if len(self.ranking) == 6:
+            #     print(self.ranking)
+            #     self.state = "results"
 
     def home_game(self):
 
@@ -250,7 +257,6 @@ class Game(ConnectionListener):
                     print("Connection lost in home")
                     self.connected = False
                     self.state = "home"
-            self.clock.tick(60)
 
     def options(self):
         while self.state == "options":
@@ -284,7 +290,6 @@ class Game(ConnectionListener):
                     print("Connection lost in options")
                     self.connected = False
                     self.state = "home"
-            self.clock.tick(60)
 
     def menu_bet(self):
         frame_dat_cuoc = pygame.image.load('assets/khung_cuoc_1.png')
@@ -388,7 +393,6 @@ class Game(ConnectionListener):
                     print("Connection lost in menu_bet")
                     self.connected = False
                     self.state = "home"
-            self.clock.tick(60)
 
     def menu_game_play(self):
 
@@ -477,7 +481,6 @@ class Game(ConnectionListener):
                     print("Connection lost in menu_game_play")
                     self.connected = False
                     self.state = "home"
-            self.clock.tick(60)
 
     def play(self):
         frames_nhanvat = [
@@ -542,17 +545,17 @@ class Game(ConnectionListener):
                     print("Connection lost in play")
                     self.connected = False
                     self.state = "home"
-            self.clock.tick(60)
 
     def results(self):
+        if not hasattr(self, "results_played_sound"):
+            self.results_played_sound = False
+
         while self.state == "results":
             self.screen.fill((0, 0, 0))
             self.screen.blit(self.background_image, (self.background_x, 0))
             if self.background_x < 0:
                 self.screen.blit(self.background_image, (self.background_x + SCREEN_WIDTH, 0))
-            # draw_text_with_border(
-            #     "FINAL RESULTS", get_font(60), "#d70000", "black", (SCREEN_WIDTH // 2 - 200, 50), 2
-            # )
+
             for idx, horse_id in enumerate(self.ranking, start=1):
                 if idx == 1:
                     draw_text_with_border(
@@ -571,40 +574,37 @@ class Game(ConnectionListener):
                     )
                 else:
                     draw_text_with_border(
-                        f"Rank {idx}: Horse {horse_id}", get_font(40), "#d70000", "black", (SCREEN_WIDTH // 2 - 150, 150 + idx * 50), 2
+                        f"Rank {idx}: Horse {horse_id}", get_font(40), "#d70000", "black",
+                        (SCREEN_WIDTH // 2 - 150, 150 + idx * 50), 2
                     )
+
             if self.bet and self.ranking:
+                if not self.results_played_sound:  # chỉ phát 1 lần
+                    if self.ranking[0] == self.bet:
+                        game_win.play()
+                    else:
+                        game_over.play()
+                    self.results_played_sound = True
+
                 result_text = "You Win!" if self.ranking[0] == self.bet else "You Lose!"
                 draw_text_with_border(
-                    result_text, get_font(50), "#00ff00" if self.ranking[0] == self.bet else "#ff0000", "black", (SCREEN_WIDTH // 2 - 100, 500), 2
+                    result_text, get_font(50), "#00ff00" if self.ranking[0] == self.bet else "#ff0000",
+                    "black", (SCREEN_WIDTH // 2 - 100, 500), 2
                 )
 
-
-            BACK_BUTTON = Button(
-                image=pygame.image.load("assets/Quit Rect.png"), pos=(SCREEN_WIDTH // 2, 600),
-                text_input="BACK", font=get_font(45), base_color="#ff8700", hovering_color="grey",
-                border_color_text="BLACK", colour=(84, 84, 84)
-            )
-            BACK_BUTTON.changeColor(pygame.mouse.get_pos())
-            BACK_BUTTON.update(self.screen)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-
-                    music_button.play()
-
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if BACK_BUTTON.checkForInput(pygame.mouse.get_pos()):
-
-                        music_button.play()
-                        self.bet = None
-                        self.state = "playing"
-                        # self.bet = None
-                        # connection.Close()
-                        # self.connected = False
             pygame.display.update()
-            self.clock.tick(60)
+
+            if self.connected:
+                try:
+                    connection.Pump()
+                    self.Pump()
+                except:
+                    print("Connection lost in results")
+                    self.connected = False
+                    self.state = "home"
+
+        # Reset flag khi thoát khỏi results
+        self.results_played_sound = False
 
     def run(self):
         while True:
