@@ -304,6 +304,9 @@ class Game(ConnectionListener):
 
         while self.state == "waiting":
             self.screen.fill((0, 0, 0))
+            self.background_x -= 3
+            if self.background_x <= -SCREEN_WIDTH:
+                self.background_x = 0
             self.screen.blit(self.background_image, (self.background_x, 0))
             if self.background_x < 0:
                 self.screen.blit(self.background_image, (self.background_x + SCREEN_WIDTH, 0))
@@ -419,9 +422,13 @@ class Game(ConnectionListener):
 
         while self.state == "waiting":
             self.screen.fill((0, 0, 0))
+            self.background_x -= 3
+            if self.background_x <= -SCREEN_WIDTH:
+                self.background_x = 0
             self.screen.blit(self.background_image, (self.background_x, 0))
             if self.background_x < 0:
                 self.screen.blit(self.background_image, (self.background_x + SCREEN_WIDTH, 0))
+
             MENU_MOUSE_POS = pygame.mouse.get_pos()
             ngua_1 = Button(
                 image=khung_cuoc, pos=(140, 390),
