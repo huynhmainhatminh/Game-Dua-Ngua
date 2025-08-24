@@ -3,7 +3,7 @@ from data.spritesheet import SpriteSheet
 
 
 class ListFrames:
-    def __init__(self, frame_width: int, frame_height: int, image: str, scale: int, color: tuple) -> None:
+    def __init__(self, frame_width: int, frame_height: int, image: str, scale: float, color: tuple) -> None:
         self.frame_width = frame_width
         self.frame_height = frame_height
         self.scale = scale
