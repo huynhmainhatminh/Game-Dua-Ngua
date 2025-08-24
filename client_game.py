@@ -21,7 +21,10 @@ json_layout_menu_nhanvat = {
 }
 
 
-music = pygame.mixer.Sound('music/brick.wav')  # Đảm bảo rằng tệp music.wav tồn tại trong thư mục hiện tại
+music_button = pygame.mixer.Sound('music/brick.wav')
+
+music_loop = pygame.mixer.Sound('music/game-music-loop-7-145285.wav')
+music_loop.play(loops=9999)
 
 
 def get_font(size):
@@ -135,30 +138,35 @@ class Game(ConnectionListener):
         self.state = data["state"]
         self.countdown = data["countdown"]
         self.background_x = data.get("background_x", 0)
-        print(f"Initialized: state={self.state}, frame_counts={self.frame_counts}, countdown={self.countdown}, background_x={self.background_x}")
+        # print(f"Initialized: state={self.state}, frame_counts={self.frame_counts}, countdown={self.countdown},
+        # background_x={self.background_x}")
 
     def Network_update(self, data):
         current_time = pygame.time.get_ticks()
         self.last_network_update = current_time
-        print(f"Received data: {data}")
+        # print(f"Received data: {data}")
         self.state = data["state"]
         self.background_x = data.get("background_x", self.background_x)
         if self.state == "waiting":
             self.countdown = data["countdown"]
             self.ranking = data.get("ranking", [])
-            print(f"Countdown updated: {self.countdown}")
+            # print(f"Countdown updated: {self.countdown}")
         else:  # playing
             self.ranking = data.get("ranking", [])
             for char_data in data.get("characters", []):
                 for character in self.characters:
                     if character.id == char_data["id"]:
                         frame = char_data["frame"] % self.frame_counts[character.id] if self.frame_counts[character.id] > 0 else 0
-                        print(f"Updating horse {character.id}: x={char_data['x']}, y={char_data['y']}, frame={frame}")
+                        # print(f"Updating horse {character.id}: x={char_data['x']}, y={char_data['y']}, frame={frame}")
                         character.update(char_data["x"], char_data["y"], frame)
             if len(self.ranking) == 6:
+                print(self.ranking)
                 self.state = "results"
 
     def home_game(self):
+
+        self.ranking.clear()
+
         choices = random.sample(list(json_layout_menu_nhanvat.keys()), 4)
         positions = [(0, 500), (360, 560), (720, 500), (1100, 560)]
         characters = []
@@ -214,7 +222,7 @@ class Game(ConnectionListener):
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                         try:
-                            music.play()
+                            music_button.play()
                             self.Connect(("localhost", 31425))
                             self.connected = True
                             self.state = "waiting"
@@ -346,7 +354,7 @@ class Game(ConnectionListener):
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if cancel.checkForInput(MENU_MOUSE_POS):
-                        music.play()
+                        music_button.play()
                         self.menu_game_play()
                         # self.state = "waiting"
                         # connection.Close()
@@ -394,6 +402,9 @@ class Game(ConnectionListener):
             self.clock.tick(60)
 
     def menu_game_play(self):
+
+        self.ranking.clear()
+
         khung_cuoc = pygame.image.load('assets/khung_ten.png')
         khung_cuoc = pygame.transform.scale(khung_cuoc, (200, 150))
         frames_nhanvat = [
@@ -459,9 +470,8 @@ class Game(ConnectionListener):
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if button_bet.checkForInput(MENU_MOUSE_POS):
-                        music.play()
+                        music_button.play()
 
-                        self.state = "waiting"
                         self.menu_bet()
             all_sprites.update()
             all_sprites.draw(self.screen)
@@ -495,7 +505,7 @@ class Game(ConnectionListener):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
 
-                    music.play()
+                    music_button.play()
 
                     pygame.quit()
                     sys.exit()
@@ -526,10 +536,10 @@ class Game(ConnectionListener):
                         )
             all_sprites.update()
             all_sprites.draw(self.screen)
-            print(f"Drawing sprites: {[sprite.rect.x for sprite in self.characters]}")
-            current_time = pygame.time.get_ticks()
-            if current_time - self.last_network_update > 1000:
-                print("Warning: No network updates for 1 second")
+            # print(f"Drawing sprites: {[sprite.rect.x for sprite in self.characters]}")
+            # current_time = pygame.time.get_ticks()
+            # if current_time - self.last_network_update > 1000:
+            #     print("Warning: No network updates for 1 second")
             pygame.display.update()
             if self.connected:
                 try:
@@ -575,6 +585,8 @@ class Game(ConnectionListener):
                 draw_text_with_border(
                     result_text, get_font(50), "#00ff00" if self.ranking[0] == self.bet else "#ff0000", "black", (SCREEN_WIDTH // 2 - 100, 500), 2
                 )
+
+
             BACK_BUTTON = Button(
                 image=pygame.image.load("assets/Quit Rect.png"), pos=(SCREEN_WIDTH // 2, 600),
                 text_input="BACK", font=get_font(45), base_color="#ff8700", hovering_color="grey",
@@ -585,19 +597,19 @@ class Game(ConnectionListener):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
 
-                    music.play()
+                    music_button.play()
 
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if BACK_BUTTON.checkForInput(pygame.mouse.get_pos()):
 
-                        music.play()
+                        music_button.play()
 
-                        self.state = "home"
-                        self.bet = None
-                        connection.Close()
-                        self.connected = False
+                        self.state = "playing"
+                        # self.bet = None
+                        # connection.Close()
+                        # self.connected = False
             pygame.display.update()
             self.clock.tick(60)
 
