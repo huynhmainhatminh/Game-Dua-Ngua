@@ -292,6 +292,7 @@ class Game(ConnectionListener):
         frame_dat_cuoc.set_colorkey((84, 84, 84))
         khung_cuoc = pygame.image.load('assets/khung_cuoc_1.png')
         khung_cuoc = pygame.transform.scale(khung_cuoc, (350, 110))
+
         frames_nhanvat = [
             ListFrames(
                 frame_width=80, frame_height=66, image=f"ngua_vay_duoi/{i}.png", scale=1.3, color=(255, 255, 0)
@@ -311,30 +312,27 @@ class Game(ConnectionListener):
             if self.background_x < 0:
                 self.screen.blit(self.background_image, (self.background_x + SCREEN_WIDTH, 0))
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-            ngua_1 = Button(
-                image=khung_cuoc, pos=(200, 90),
-                text_input="      KIM CUONG #1", font=get_font(19), base_color="BLACK", hovering_color="Green", colour=(84, 84, 84)
-            )
-            ngua_2 = Button(
-                image=khung_cuoc, pos=(200, 210),
-                text_input="      THIEN LONG #2", font=get_font(19), base_color="BLACK", hovering_color="Green", colour=(84, 84, 84)
-            )
-            ngua_3 = Button(
-                image=khung_cuoc, pos=(200, 330),
-                text_input="      CHAN SAT #3", font=get_font(19), base_color="BLACK", hovering_color="Green", colour=(84, 84, 84)
-            )
-            ngua_4 = Button(
-                image=khung_cuoc, pos=(200, 450),
-                text_input="      BACH MA #4", font=get_font(19), base_color="BLACK", hovering_color="Green", colour=(84, 84, 84)
-            )
-            ngua_5 = Button(
-                image=khung_cuoc, pos=(200, 570),
-                text_input="      BO MONG #5", font=get_font(19), base_color="BLACK", hovering_color="Green", colour=(84, 84, 84)
-            )
-            ngua_6 = Button(
-                image=khung_cuoc, pos=(200, 690),
-                text_input="      HAC BACH #6", font=get_font(19), base_color="BLACK", hovering_color="Green", colour=(84, 84, 84)
-            )
+
+            # tạo danh sách ngựa (dễ quản lý)
+            horse_buttons = []
+            names = ["KIM CUONG #1", "THIEN LONG #2", "CHAN SAT #3",
+                     "BACH MA #4", "BO MONG #5", "HAC BACH #6"]
+            for i in range(6):
+                # Nếu đang chọn ngựa này => button màu xám
+                if self.bet == i + 1:
+                    base_color = "green"
+                    hovering_color = "green"
+                else:
+                    base_color = "#ff005f"
+                    hovering_color = "yellow"
+                btn = Button(
+                    image=khung_cuoc, pos=(200, 90 + i * 120),
+                    text_input=f"      {names[i]}", font=get_font(19),
+                    base_color=base_color, hovering_color=hovering_color, border_color_text="BLACK", border_width=2,
+                    colour=(84, 84, 84)
+                )
+                horse_buttons.append(btn)
+
             place_bet = Button(
                 image=pygame.image.load("assets/Quit Rect.png"), pos=(1400 - 280, 350),
                 text_input="PLACE BET", font=get_font(50), base_color="#ff005f", hovering_color="grey",
@@ -345,12 +343,15 @@ class Game(ConnectionListener):
                 text_input="CANCEL", font=get_font(45), base_color="#ff8700", hovering_color="grey",
                 border_color_text="BLACK", colour=(84, 84, 84)
             )
-            for button in [ngua_1, ngua_2, ngua_3, ngua_4, ngua_5, ngua_6, cancel, place_bet]:
+
+            for button in horse_buttons + [cancel, place_bet]:
                 button.changeColor(MENU_MOUSE_POS)
                 button.update(self.screen)
+
             draw_text_with_border(
                 str(self.countdown), get_font(80), "#d70000", "black", (SCREEN_WIDTH // 2 - 90, 100), 4
             )
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -359,37 +360,22 @@ class Game(ConnectionListener):
                     if cancel.checkForInput(MENU_MOUSE_POS):
                         music_button.play()
                         self.menu_game_play()
-                        # self.state = "waiting"
-                        # connection.Close()
-                        # self.connected = False
-                    if ngua_1.checkForInput(MENU_MOUSE_POS):
-                        self.bet = 1
-                        print("Bet placed on Horse 1")
-                    elif ngua_2.checkForInput(MENU_MOUSE_POS):
-                        self.bet = 2
-                        print("Bet placed on Horse 2")
-                    elif ngua_3.checkForInput(MENU_MOUSE_POS):
-                        self.bet = 3
-                        print("Bet placed on Horse 3")
-                    elif ngua_4.checkForInput(MENU_MOUSE_POS):
-                        self.bet = 4
-                        print("Bet placed on Horse 4")
-                    elif ngua_5.checkForInput(MENU_MOUSE_POS):
-                        self.bet = 5
-                        print("Bet placed on Horse 5")
-                    elif ngua_6.checkForInput(MENU_MOUSE_POS):
-                        self.bet = 6
-                        print("Bet placed on Horse 6")
+                    for i, btn in enumerate(horse_buttons, start=1):
+                        if btn.checkForInput(MENU_MOUSE_POS):
+                            self.bet = i
+                            print(f"Bet placed on Horse {i}")
                     if place_bet.checkForInput(MENU_MOUSE_POS):
                         if self.bet is not None:
                             print(f"Bet confirmed: Horse {self.bet}")
                             self.menu_game_play()
                         else:
                             draw_text_with_border(
-                                "Please select a horse!", get_font(30), "#ff0000", "black", (SCREEN_WIDTH // 2 - 150, 600), 2
+                                "Please select a horse!", get_font(30), "#ff0000", "black",
+                                (SCREEN_WIDTH // 2 - 150, 600), 2
                             )
                             pygame.display.update()
                             pygame.time.wait(2000)
+
             self.screen.blit(frame_dat_cuoc, (SCREEN_WIDTH - frame_dat_cuoc.get_width() - 30, 30))
             all_sprites.update()
             all_sprites.draw(self.screen)
@@ -612,7 +598,7 @@ class Game(ConnectionListener):
                     if BACK_BUTTON.checkForInput(pygame.mouse.get_pos()):
 
                         music_button.play()
-
+                        self.bet = None
                         self.state = "playing"
                         # self.bet = None
                         # connection.Close()
