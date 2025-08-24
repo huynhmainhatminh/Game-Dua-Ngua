@@ -1,3 +1,5 @@
+import time
+
 import PodSixNet.Server
 from PodSixNet.Channel import Channel
 import pygame
@@ -85,6 +87,20 @@ class GameServer(PodSixNet.Server.Server):
                 "state": self.state,
                 "countdown": self.countdown,
             }
+        elif self.state == "results":
+            # Gửi state results cho client
+            state = {
+                "action": "update",
+                "state": self.state,
+                "ranking": [character.id for character in self.ranking]
+            }
+
+            # Nếu đã 7 giây thì reset về waiting
+            if current_time - self.results_start_time >= 7000:
+                self.state = "waiting"
+                self.countdown = 30
+                self.last_tick = current_time
+                self.ranking.clear()
         else:  # playing
             # Update horse speeds
             if current_time - self.last_speed_change >= self.speed_change_interval:
@@ -129,10 +145,16 @@ class GameServer(PodSixNet.Server.Server):
                 print("\nFINAL RESULTS:")
                 for idx, horse in enumerate(self.ranking, start=1):
                     print(f"Rank {idx}: Horse {horse.id}")
-                self.state = "waiting"
-                self.countdown = 30
-                self.last_tick = current_time
-                self.ranking.clear()
+
+                # self.state = "waiting"
+                # self.countdown = 30
+                # self.last_tick = current_time
+                # self.ranking.clear()
+                self.state = "results"
+                self.results_start_time = current_time  # đánh dấu thời gian bắt đầu trang results
+
+
+
 
         # Send state to all clients
         for channel in self.channels:
