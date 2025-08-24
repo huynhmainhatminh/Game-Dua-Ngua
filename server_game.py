@@ -84,7 +84,6 @@ class GameServer(PodSixNet.Server.Server):
                 "action": "update",
                 "state": self.state,
                 "countdown": self.countdown,
-                "background_x": self.background_x
             }
         else:  # playing
             # Update horse speeds
@@ -126,13 +125,14 @@ class GameServer(PodSixNet.Server.Server):
             }
 
             # End game when all horses finish
-            if len(self.ranking) == 7:
+            if len(self.ranking) == 6:
                 print("\nFINAL RESULTS:")
                 for idx, horse in enumerate(self.ranking, start=1):
                     print(f"Rank {idx}: Horse {horse.id}")
                 self.state = "waiting"
                 self.countdown = 30
                 self.last_tick = current_time
+                self.ranking.clear()
 
         # Send state to all clients
         for channel in self.channels:
