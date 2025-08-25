@@ -132,6 +132,16 @@ class Game(ConnectionListener):
         self.state = "home"
         self.countdown = 30
         self.frame_counts = {1: 8, 2: 8, 3: 8, 4: 8, 5: 8, 6: 8}
+
+        self.horse_names = {
+            1: "Kim Cuong",
+            2: "Thien Long",
+            3: "Chan Sat",
+            4: "Bach Ma",
+            5: "Bo Mong",
+            6: "Hac Bach"
+        }
+
         self.ranking = []
         self.connected = False
         self.characters = []
@@ -507,29 +517,30 @@ class Game(ConnectionListener):
                     sys.exit()
             if self.ranking:
                 draw_text_with_border(
-                    "RANKING:", get_font(40), "#d70000", "black", (SCREEN_WIDTH - 300, 50), 2
+                    "RANKING:", get_font(40), "#d70000", "black", (SCREEN_WIDTH - 1300, 50), 2
                 )
                 for idx, horse_id in enumerate(self.ranking, start=1):
 
                     if idx == 1:
                         draw_text_with_border(
                             f"Rank {idx}: Horse {horse_id}", get_font(30), "#ffff00", "black",
-                            (SCREEN_WIDTH - 300, 100 + idx * 40), 2
+                            (SCREEN_WIDTH - 1300, 100 + idx * 40), 2
                         )
                     elif idx == 2:
                         draw_text_with_border(
                             f"Rank {idx}: Horse {horse_id}", get_font(30), "#C0C0C0", "black",
-                            (SCREEN_WIDTH - 300, 100 + idx * 40), 2
+                            (SCREEN_WIDTH - 1300, 100 + idx * 40), 2
                         )
                     elif idx == 3:
                         draw_text_with_border(
                             f"Rank {idx}: Horse {horse_id}", get_font(30), "#CD7F32", "black",
-                            (SCREEN_WIDTH - 300, 100 + idx * 40), 2
+                            (SCREEN_WIDTH - 1300, 100 + idx * 40), 2
                         )
                     else:
                         draw_text_with_border(
-                            f"Rank {idx}: Horse {horse_id}", get_font(30), "#d70000", "black", (SCREEN_WIDTH - 300, 100 + idx * 40), 2
+                            f"Rank {idx}: Horse {horse_id}", get_font(30), "#d70000", "black", (SCREEN_WIDTH - 1300, 100 + idx * 40), 2
                         )
+
             all_sprites.update()
             all_sprites.draw(self.screen)
             # print(f"Drawing sprites: {[sprite.rect.x for sprite in self.characters]}")
@@ -557,24 +568,27 @@ class Game(ConnectionListener):
                 self.screen.blit(self.background_image, (self.background_x + SCREEN_WIDTH, 0))
 
             for idx, horse_id in enumerate(self.ranking, start=1):
+
+                horse_name = self.horse_names.get(horse_id, f"Horse {horse_id}")
+
                 if idx == 1:
                     draw_text_with_border(
-                        f"Rank {idx}: Horse {horse_id}", get_font(40), "#ffff00", "black",
+                        f"Rank {idx}: {horse_name}", get_font(40), "#ffff00", "black",
                         (SCREEN_WIDTH // 2 - 150, 150 + idx * 50), 2
                     )
                 elif idx == 2:
                     draw_text_with_border(
-                        f"Rank {idx}: Horse {horse_id}", get_font(40), "#C0C0C0", "black",
+                        f"Rank {idx}: {horse_name}", get_font(40), "#C0C0C0", "black",
                         (SCREEN_WIDTH // 2 - 150, 150 + idx * 50), 2
                     )
                 elif idx == 3:
                     draw_text_with_border(
-                        f"Rank {idx}: Horse {horse_id}", get_font(40), "#CD7F32", "black",
+                        f"Rank {idx}: {horse_name}", get_font(40), "#CD7F32", "black",
                         (SCREEN_WIDTH // 2 - 150, 150 + idx * 50), 2
                     )
                 else:
                     draw_text_with_border(
-                        f"Rank {idx}: Horse {horse_id}", get_font(40), "#d70000", "black",
+                        f"Rank {idx}: {horse_name}", get_font(40), "#d70000", "black",
                         (SCREEN_WIDTH // 2 - 150, 150 + idx * 50), 2
                     )
 
