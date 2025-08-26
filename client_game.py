@@ -130,7 +130,7 @@ class Game(ConnectionListener):
         self.background_x = 0
         self.clock = pygame.time.Clock()
         self.state = "home"
-        self.countdown = 30
+        self.countdown = 0
         self.frame_counts = {1: 8, 2: 8, 3: 8, 4: 8, 5: 8, 6: 8}
 
         self.horse_names = {
@@ -380,6 +380,7 @@ class Game(ConnectionListener):
                             self.bet = i
                             print(f"Bet placed on Horse {i}")
                     if place_bet.checkForInput(MENU_MOUSE_POS):
+                        music_button.play()
                         if self.bet is not None:
                             print(f"Bet confirmed: Horse {self.bet}")
                             self.menu_game_play()
