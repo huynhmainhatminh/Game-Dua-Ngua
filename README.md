@@ -22,14 +22,8 @@
 ## Hình ảnh demo
 
 <img width="1388" height="793" alt="Image" src="https://github.com/user-attachments/assets/a9f109da-253e-4887-8038-d7a6d72a2570" />
-
-<img width="1393" height="800" alt="Image" src="https://github.com/user-attachments/assets/089b23e5-ce48-474b-b842-34f33b06f4c4" />
-
-<img width="1395" height="785" alt="Image" src="https://github.com/user-attachments/assets/bf28fbb6-055e-4bcd-b2c4-c0d1ac9106ed" />
-
-<img width="1394" height="794" alt="Image" src="https://github.com/user-attachments/assets/996e9181-1f93-4676-af60-700f60295a91" />
-
-<img width="1395" height="791" alt="Image" src="https://github.com/user-attachments/assets/3928b77b-d159-4668-b8af-d70d2e00aedd" />
+<img width="1400" height="788" alt="Image" src="https://github.com/user-attachments/assets/add2ace5-e08e-461f-928c-15f8a9e527a1" />
+<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/4bac7363-68a4-45b0-99a1-5191ac00175f" />
 
 
 ## Danh sách thành viên đóng góp cho dự án
