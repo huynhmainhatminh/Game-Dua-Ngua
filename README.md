@@ -23,8 +23,7 @@
 
 <img width="1388" height="793" alt="Image" src="https://github.com/user-attachments/assets/a9f109da-253e-4887-8038-d7a6d72a2570" />
 <img width="1400" height="788" alt="Image" src="https://github.com/user-attachments/assets/add2ace5-e08e-461f-928c-15f8a9e527a1" />
-<img width="1920" height="1080" alt="Image" src="https://github.com/user-attachments/assets/4bac7363-68a4-45b0-99a1-5191ac00175f" />
-
+<img width="1388" height="782" alt="Image" src="https://github.com/user-attachments/assets/8b71b8d7-824d-47d7-8114-d5c10366e1e9" />
 
 ## Danh sách thành viên đóng góp cho dự án
 | STT | Họ và Tên | MSSV | Vai Trò |
