@@ -430,44 +430,43 @@ class Game(ConnectionListener):
                 self.screen.blit(self.background_image, (self.background_x + SCREEN_WIDTH, 0))
 
             MENU_MOUSE_POS = pygame.mouse.get_pos()
-            ngua_1 = Button(
-                image=khung_cuoc, pos=(140, 390),
-                text_input="KIM CUONG", font=get_font(17), base_color="BLACK", hovering_color="BLACK",
-                colour=(84, 84, 84), text_offset=(0, -51)
-            )
-            ngua_2 = Button(
-                image=khung_cuoc, pos=(360, 390),
-                text_input="THIEN LONG", font=get_font(17), base_color="BLACK", hovering_color="BLACK",
-                colour=(84, 84, 84), text_offset=(0, -51)
-            )
-            ngua_3 = Button(
-                image=khung_cuoc, pos=(580, 390),
-                text_input="CHAN SAT", font=get_font(17), base_color="BLACK", hovering_color="BLACK",
-                colour=(84, 84, 84), text_offset=(0, -51)
-            )
-            ngua_4 = Button(
-                image=khung_cuoc, pos=(800, 390),
-                text_input="BACH MA", font=get_font(17), base_color="BLACK", hovering_color="BLACK",
-                colour=(84, 84, 84), text_offset=(0, -51)
-            )
-            ngua_5 = Button(
-                image=khung_cuoc, pos=(1020, 390),
-                text_input="BO MONG", font=get_font(17), base_color="BLACK", hovering_color="BLACK",
-                colour=(84, 84, 84), text_offset=(0, -51)
-            )
-            ngua_6 = Button(
-                image=khung_cuoc, pos=(1240, 390),
-                text_input="HAC BACH", font=get_font(17), base_color="BLACK", hovering_color="BLACK",
-                colour=(84, 84, 84), text_offset=(0, -51)
-            )
+            # danh sách tên ngựa
+            horse_names = ["KIM CUONG", "THIEN LONG", "CHAN SAT",
+                           "BACH MA", "BO MONG", "HAC BACH"]
+
+            buttons_ngua = []
+            positions = [(140, 390), (360, 390), (580, 390), (800, 390), (1020, 390), (1240, 390)]
+
+            for i, (name, pos) in enumerate(zip(horse_names, positions), start=1):
+                # Nếu i == self.bet thì text màu xanh lá
+                if self.bet == i:
+                    base_color = "#00ff00"  # xanh lá
+                    hover_color = "#00ff00"
+                    border_width = 2
+                else:
+                    base_color = "BLACK"
+                    hover_color = "BLACK"
+                    border_width = 0
+
+                btn = Button(
+                    image=khung_cuoc, pos=pos,
+                    text_input=name, font=get_font(17),
+                    base_color=base_color, hovering_color=hover_color, border_width=border_width,
+                    border_color_text="BLACK",
+                    colour=(84, 84, 84), text_offset=(0, -51)
+                )
+                buttons_ngua.append(btn)
+
             button_bet = Button(
                 image=pygame.image.load("assets/Quit Rect.png"), pos=(SCREEN_WIDTH - 200, 670),
                 text_input="BET", font=get_font(90), base_color="#ff005f", hovering_color="grey",
                 border_color_text="BLACK", colour=(84, 84, 84), border_width=7
             )
-            for button in [button_bet, ngua_1, ngua_2, ngua_3, ngua_4, ngua_5, ngua_6]:
+
+            for button in [button_bet] + buttons_ngua:
                 button.changeColor(MENU_MOUSE_POS)
                 button.update(self.screen)
+
             draw_text_with_border(
                 str(self.countdown), get_font(80), "#d70000", "black", (SCREEN_WIDTH // 2 - 90, 100), 4
             )
@@ -598,6 +597,7 @@ class Game(ConnectionListener):
                         game_win.play()
                     else:
                         game_over.play()
+
                     self.results_played_sound = True
 
                 result_text = "You Win!" if self.ranking[0] == self.bet else "You Lose!"
@@ -619,6 +619,7 @@ class Game(ConnectionListener):
 
         # Reset flag khi thoát khỏi results
         self.results_played_sound = False
+        self.bet = None
 
     def run(self):
         while True:
