@@ -46,6 +46,10 @@ python client_game.py
 <img width="1390" height="791" alt="Image" src="https://github.com/user-attachments/assets/53edb058-9b03-434b-99c2-74a27250e8bd" />
 <img width="1390" height="788" alt="Image" src="https://github.com/user-attachments/assets/a7fe26c7-fd2a-4b63-9e73-7f45c07469e5" />
 
+## Video Demo
+
+https://github.com/user-attachments/assets/21b6e0a1-26fc-4f7a-80da-846bbc5c59fd
+
 ## Danh sách thành viên đóng góp cho dự án
 | STT | Họ và Tên | MSSV | Vai Trò |
 |--|--|--|--|
