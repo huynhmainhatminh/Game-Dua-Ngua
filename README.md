@@ -23,6 +23,7 @@
 
 ```bash
 pip install pygame
+
 pip install PodSixNet
 ```
 
