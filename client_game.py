@@ -601,9 +601,13 @@ class Game(ConnectionListener):
                     self.results_played_sound = True
 
                 result_text = "You Win!" if self.ranking[0] == self.bet else "You Lose!"
+                # draw_text_with_border(
+                #     result_text, get_font(50), "#00ff00" if self.ranking[0] == self.bet else "#ff0000",
+                #     "black", (SCREEN_WIDTH // 2 - 100, 500), 2
+                # )
+
                 draw_text_with_border(
-                    result_text, get_font(50), "#00ff00" if self.ranking[0] == self.bet else "#ff0000",
-                    "black", (SCREEN_WIDTH // 2 - 100, 500), 2
+                    result_text, get_font(50), "#00ff00" if self.ranking[0] == self.bet else "#ff0000", "black", (SCREEN_WIDTH // 2 - 100, 500), 4
                 )
 
             pygame.display.update()
