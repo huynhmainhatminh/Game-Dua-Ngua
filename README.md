@@ -19,6 +19,23 @@
 - PyGame
 - PodSixNet
 
+# Cài đặt thư viện
+
+```bash
+pip install pygame
+pip install PodSixNet
+```
+
+# Chạy Server
+```bash
+python server_game.py
+```
+
+# Chạy Client
+```bash
+python client_game.py
+```
+
 ## Hình ảnh demo
 
 <img width="1388" height="793" alt="Image" src="https://github.com/user-attachments/assets/a9f109da-253e-4887-8038-d7a6d72a2570" />
