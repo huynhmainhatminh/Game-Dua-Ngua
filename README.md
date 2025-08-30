@@ -50,6 +50,11 @@ python client_game.py
 
 https://github.com/user-attachments/assets/21b6e0a1-26fc-4f7a-80da-846bbc5c59fd
 
+## Thuyết trình
+
+[▶️ Xem video trên YouTube](https://www.youtube.com/watch?v=v7KEFxc_RW4)
+
+
 ## Danh sách thành viên đóng góp cho dự án
 | STT | Họ và Tên | MSSV | Vai Trò |
 |--|--|--|--|
